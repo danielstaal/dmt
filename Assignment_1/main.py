@@ -4,11 +4,8 @@ import pandas as pd
 import numpy as np
 import datetime
 
-
 def getData(filename):
 	return pd.read_csv(filename, error_bad_lines=False, sep=',', encoding='latin-1')
-
-mood_smartphones = getData('dataset_mood_smartphone.csv')
 
 # Create table for missing data analysis
 def draw_missing_data_table(df):
@@ -17,16 +14,24 @@ def draw_missing_data_table(df):
     missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
     return missing_data
 
+def getSubset(dataframe, start, end, subjectid):
+'''
+Get data for subjectid in time range (start - end (timestamps)) 	
+'''	
+	return dataframe[(dataframe["id"] == subjectid) & (dataframe['time'] < end) & (dataframe['time'] > start)]
+
+
+
+# Get data
+mood_smartphones = getData('dataset_mood_smartphone.csv')
 draw_missing_data_table(mood_smartphones)
-
-
 mood_smartphones['variable'].unique()
-
 
 # Convert dates to pd Timestamps/datetime
 mood_smartphones['time'] = pd.to_datetime(mood_smartphones['time'], format='%Y-%m-%d %H:%M:%S.%f')
-cutoff = pd.Timestamp(year=2014, month=2, day=28)
 
 # Print data until cutoff for subject 1
-print("Cutoff selection: ", cutoff)
-print(mood_smartphones[(mood_smartphones["id"] == "AS14.01") & (mood_smartphones['time'] < cutoff)])
+start = pd.Timestamp(year=2014, month=3, day=20)
+cutoff = pd.Timestamp(year=2014, month=3, day=29)
+
+print(getSubset(mood_smartphones, start, cutoff, "AS14.01")
