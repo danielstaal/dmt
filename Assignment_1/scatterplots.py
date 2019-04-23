@@ -27,7 +27,6 @@ def allSubjects(dataframe):
 # if __name__ == "__main__":
 # Get data
 mood = getData('dataset_mood_smartphone.csv')
-
 # convert dates to pd Timestamps/datetime
 mood['time'] = pd.to_datetime(mood['time'], format='%Y-%m-%d %H:%M:%S.%f')
 # draw_missing_data_table(mood)
@@ -45,7 +44,7 @@ moodsub1 = sub1[(sub1['variable'] == 'mood')]
 testtime = traces.TimeSeries()
 for idx, row in moodsub1.iterrows():
     testtime[row['time']] = row['value']
-print(testtime)
+# print(testtime)
 # print(testtime[datetime.datetime(2014, 3, 25, 20,  30, 0)])
 transformed = testtime.moving_average(3000, pandas=True)
 # print(transformed)
@@ -61,7 +60,7 @@ for subject in allSubjects(mood):
     start = mood['time'][(mood['id'] == subject)].min()
     cutoff = mood['time'][(mood['id'] == subject)].max()
     subset = getSubset(mood, start, cutoff, subject)
-    # print("\n\n\nSTATS FOR:", subject,"\n")
+    print("\n\n\nSTATS FOR:", subject,"\n")
     variables = subset['variable'].unique()
     subjectdict = {}
     handles = []
@@ -77,7 +76,7 @@ for subject in allSubjects(mood):
     # # Uncomment for scatterplots
     plt.figure(figsize=(16,8))
     plt.title(subject)
-    plt.scatter(subset['time'], subset['variable'], s = 1, label=subjectCounts[subject])
+    plt.scatter(subset['time'].tolist(), subset['variable'], s = 1, label=subjectCounts[subject])
     plt.xlim(left = start, right=cutoff)
     plt.tight_layout()
     
